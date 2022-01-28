@@ -57,17 +57,46 @@ public class JsonUtils {
         System.out.println("Более детальное описание погоды: " + weatherData.get("description"));
     }
 
-    public static  void parseApiRespondJSONObject (String resultJson) {
-        //string -> JSONObject
-        JSONObject obj = new JSONObject(resultJson);
+    public static void parseId (int id) {
+        //info to create URLs
+        String idStr = String.valueOf(id);
+        String commerce = "https://api.guildwars2.com/v2/commerce/prices/";
+        String item = "https://api.guildwars2.com/v2/items/";
 
-        //easier access to inner data
-        JSONObject buys = obj.getJSONObject("buys");
-        JSONObject sells = obj.getJSONObject("sells");
+        //buffer object to contain information
+        JSONObject obj = new JSONObject();
 
-        //add item
-        new Items((int)obj.get("id"), (int)buys.get("unit_price"), (int)sells.get("unit_price"));
+        //parsing information from apis
+        parseCommerce(obj, createUrl(commerce + idStr));
+        parseItem(obj, createUrl(item + idStr));
+
+        //adding new item using acquired data
+        new Items((int)obj.get("id"),
+                (int)obj.get("buy_price"),
+                (int)obj.get("sell_price"),
+                (String)obj.get("name"));
     }
+
+    public static void parseCommerce(JSONObject JSONObj, URL url) {
+        //create JSONObject from string we receive parsing URL
+        JSONObject commerceJSON = new JSONObject(parseUrl(url));
+
+        //get id buy_price sell_price
+        JSONObj.put("id", commerceJSON.get("id"));
+        JSONObj.put("buy_price", commerceJSON.getJSONObject("buys").get("unit_price"));
+        JSONObj.put("sell_price", commerceJSON.getJSONObject("sells").get("unit_price"));
+    }
+
+    public static void parseItem(JSONObject JSONObj, URL url) {
+        //create JSONObject from string we receive parsing URL
+        JSONObject commerceJSON = new JSONObject(parseUrl(url));
+
+        //get id buy_price sell_price
+        JSONObj.put("name", commerceJSON.get("name"));
+    }
+
+
+//    public static void
 
     public static void printJSONObjectKeys (JSONObject obj) {
         Iterator<String> keys = obj.keys();

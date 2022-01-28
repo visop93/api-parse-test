@@ -9,11 +9,13 @@ public class Items {
     private int id,
         buyPrice,
         sellPrice;
+    private String name;
 
-    public Items(int id, int buyPrice, int sellPrice) {
+    public Items(int id, int buyPrice, int sellPrice, String name) {
         this.id = id;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
+        this.name = name;
 
         ITEMS_LIST.add(this);
     }
@@ -32,10 +34,11 @@ public class Items {
 
     @Override
     public String toString() {
-        return "Item{" +
+        return "Items{" +
                 "id=" + id +
                 ", buyPrice=" + buyPrice +
                 ", sellPrice=" + sellPrice +
+                ", name='" + name + '\'' +
                 '}';
     }
 

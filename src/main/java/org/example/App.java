@@ -16,21 +16,12 @@ import java.net.URL;
 
 public class App {
     public static void main(String[] args) {
-        //создаем URL
-        String gw2api = "https://api.guildwars2.com/v2/commerce/prices/43357";
-        URL urlGw2 = JsonUtils.createUrl(gw2api);
+        int id = 43357;
+        JsonUtils.parseId(id);
 
-        //загружаем полученный Json в виде строки
-        String gw2ApiResult = JsonUtils.parseUrl(urlGw2);
-
-        //parse необходимую информацию
-        JsonUtils.parseApiRespondJSONObject(gw2ApiResult);
+        int id2 = 93326;
+        JsonUtils.parseId(id2);
 
         Items.ITEMS_LIST.forEach(i -> System.out.println(i.toString()));
-
-        //test with weather
-//        URL url = JsonUtils.createUrl(WEATHER_URL);
-//        String wResult = JsonUtils.parseUrl(url);
-//        JsonUtils.parseApiRespondJSONObject(wResult);
     }
 }
