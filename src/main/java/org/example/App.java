@@ -26,6 +26,8 @@ public class App {
         //parse необходимую информацию
         JsonUtils.parseApiRespondJSONObject(gw2ApiResult);
 
+        Items.ITEMS_LIST.forEach(i -> System.out.println(i.toString()));
+
         //test with weather
 //        URL url = JsonUtils.createUrl(WEATHER_URL);
 //        String wResult = JsonUtils.parseUrl(url);

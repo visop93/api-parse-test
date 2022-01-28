@@ -61,18 +61,12 @@ public class JsonUtils {
         //string -> JSONObject
         JSONObject obj = new JSONObject(resultJson);
 
-        //выведел ID
-        System.out.println("id - " + obj.get("id"));
-//        printJSONObjectKeys(obj);
+        //easier access to inner data
+        JSONObject buys = obj.getJSONObject("buys");
+        JSONObject sells = obj.getJSONObject("sells");
 
-//        System.out.println("buys key value - " + obj.get("buys"));
-
-
-        JSONObject buys = new JSONObject(obj.get("buys").toString());
-        System.out.println("highest buy - " + buys.get("unit_price"));
-
-        JSONObject sells = new JSONObject(obj.get("sells").toString());
-        System.out.println("lowest sell - " + sells.get("unit_price"));
+        //add item
+        new Items((int)obj.get("id"), (int)buys.get("unit_price"), (int)sells.get("unit_price"));
     }
 
     public static void printJSONObjectKeys (JSONObject obj) {
