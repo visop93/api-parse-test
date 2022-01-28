@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 
 public class JsonUtils {
     /**
@@ -54,6 +55,35 @@ public class JsonUtils {
         System.out.println("Погода на данный момент: " + weatherData.get("main"));
         // и описание к ней
         System.out.println("Более детальное описание погоды: " + weatherData.get("description"));
+    }
+
+    public static  void parseApiRespondJSONObject (String resultJson) {
+        //string -> JSONObject
+        JSONObject obj = new JSONObject(resultJson);
+
+        //выведел ID
+        System.out.println("id - " + obj.get("id"));
+//        printJSONObjectKeys(obj);
+
+//        System.out.println("buys key value - " + obj.get("buys"));
+
+
+        JSONObject buys = new JSONObject(obj.get("buys").toString());
+        System.out.println("highest buy - " + buys.get("unit_price"));
+
+        JSONObject sells = new JSONObject(obj.get("sells").toString());
+        System.out.println("lowest sell - " + sells.get("unit_price"));
+    }
+
+    public static void printJSONObjectKeys (JSONObject obj) {
+        Iterator<String> keys = obj.keys();
+        String key;
+        System.out.print("\nJSONObject\n " + obj.toString() + "\n");
+        while (keys.hasNext()) {
+            key = (String)keys.next();
+            System.out.print(" " + key);
+        }
+        System.out.print("\n");
     }
 
     // формируем новый JSON объект из нужных нам погодных данных
