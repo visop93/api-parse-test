@@ -57,7 +57,8 @@ public class JsonUtils {
         System.out.println("Более детальное описание погоды: " + weatherData.get("description"));
     }
 
-    public static void parseId (int id) {
+    //parseId on api site, return JSONObject to use it later for Item instantiation
+    public static JSONObject parseId(int id) {
         //info to create URLs
         String idStr = String.valueOf(id);
         String commerce = "https://api.guildwars2.com/v2/commerce/prices/";
@@ -70,13 +71,10 @@ public class JsonUtils {
         parseCommerce(obj, createUrl(commerce + idStr));
         parseItem(obj, createUrl(item + idStr));
 
-        //adding new item using acquired data
-        new Items((int)obj.get("id"),
-                (int)obj.get("buy_price"),
-                (int)obj.get("sell_price"),
-                (String)obj.get("name"));
+        return obj;
     }
 
+    //parsing of commerce gw2 api
     public static void parseCommerce(JSONObject JSONObj, URL url) {
         //create JSONObject from string we receive parsing URL
         JSONObject commerceJSON = new JSONObject(parseUrl(url));
@@ -87,6 +85,7 @@ public class JsonUtils {
         JSONObj.put("sell_price", commerceJSON.getJSONObject("sells").get("unit_price"));
     }
 
+    //parsing of item gw2 api
     public static void parseItem(JSONObject JSONObj, URL url) {
         //create JSONObject from string we receive parsing URL
         JSONObject commerceJSON = new JSONObject(parseUrl(url));
