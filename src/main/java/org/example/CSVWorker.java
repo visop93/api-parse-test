@@ -13,6 +13,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 //class only for reading resources so no instances needed
 public abstract class CSVWorker {
@@ -69,17 +71,23 @@ public abstract class CSVWorker {
         }
     }
 
-    //read from .csv and fill Items.ITEMS_LIST
-    public static void readItemsCSV () {
+    //read from .csv and return a HashMap
+    public static HashMap<Integer, Items> readItemsCSV () {
+
+        HashMap<Integer, Items> result;
+
         try (var fr = new FileReader(items, StandardCharsets.UTF_8)) {
-            List<Items> list = new CsvToBeanBuilder<Items>(fr)
-                    .withType(Items.class).build().parse();
-            for (var item : list) {
-                Items.ITEMS_MAP.put(item.getId(), item);
-            }
+            result = (HashMap<Integer, Items>) new CsvToBeanBuilder<Items>(fr)
+                    .withType(Items.class)
+                    .build()
+                    .parse()
+                    .stream()
+                    .collect(Collectors.toMap(Items::getId, Function.identity()));
         } catch (IOException e) {
+            result = new HashMap<>();
             e.printStackTrace();
         }
 
+        return result;
     }
 }
