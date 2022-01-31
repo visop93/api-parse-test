@@ -37,6 +37,8 @@ public class Items  implements Serializable {
         this.basicId = basicId;
         this.refinedId = refinedId;
 
+        App.logger.info(this.toString());
+
         ITEMS_MAP.put(id, this);
     }
 

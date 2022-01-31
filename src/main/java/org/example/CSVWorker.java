@@ -2,7 +2,6 @@ package org.example;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
@@ -12,7 +11,6 @@ import org.json.JSONObject;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -56,6 +54,7 @@ public abstract class CSVWorker {
 
             }
         } catch (IOException | CsvValidationException e) {
+            App.logger.error("Failed to csv containing ID's.");
             e.printStackTrace();
         }
     }
@@ -65,13 +64,14 @@ public abstract class CSVWorker {
         try (Writer writer = new FileWriter(items)) {
             //create instance of writer
             var beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
-            beanToCsv.write(map.values().stream());
+            beanToCsv.write(map.values().stream().peek(i -> App.logger.info(i.toString())));
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            e.printStackTrace();
+            App.logger.error("Failed to write to csv.", e);
         }
     }
 
     //read from .csv and return a HashMap
+    //TODO: rework method to void and take HashMap as an argument
     public static HashMap<Integer, Items> readItemsCSV () {
 
         HashMap<Integer, Items> result;
@@ -82,10 +82,11 @@ public abstract class CSVWorker {
                     .build()
                     .parse()
                     .stream()
+                    .peek(i -> App.logger.info(i.toString()))
                     .collect(Collectors.toMap(Items::getId, Function.identity()));
         } catch (IOException e) {
             result = new HashMap<>();
-            e.printStackTrace();
+            App.logger.error("Failed to read CSV", e);
         }
 
         return result;
