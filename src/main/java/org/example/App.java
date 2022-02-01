@@ -12,10 +12,10 @@ public class App {
         logger.info("Parsing Api by IDs.");
         CSVWorker.parseApiById();
 
-        logger.info("Adding additional items to the base that was written into csv earlier");
+        logger.info("Reading csv to add items that are from the base");
         CSVWorker.readItemsCSV(Items.ITEMS_MAP);
 
-        logger.info("Rewriting current information to the csv");
+        logger.info("Rewriting csv with new information");
         CSVWorker.writeItemsCSV(Items.ITEMS_MAP);
 
         logger.info("Program stopped");

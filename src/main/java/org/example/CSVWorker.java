@@ -26,7 +26,7 @@ public abstract class CSVWorker {
         try (var fr = new FileReader(fileName, StandardCharsets.UTF_8);
              var reader = new CSVReader(fr)) {
 
-            //String container for line
+            //String container for line, we skip first line
             String[] nextLine = reader.readNext();
 
             //read whole CSV
@@ -73,21 +73,19 @@ public abstract class CSVWorker {
         }
     }
 
-    //read from .csv and return a HashMap
-    //TODO: filter/map stream to peek only items that will be added to the map
+    //read items from .csv and add to the map
     public static void readItemsCSV (HashMap<Integer, Items> map) {
-
         try (var fr = new FileReader(items, StandardCharsets.UTF_8)) {
-            new CsvToBeanBuilder<Items>(fr)
+            map.putAll(new CsvToBeanBuilder<Items>(fr)
                     .withType(Items.class)
                     .build()
                     .parse()
                     .stream()
-                    .peek(i -> App.logger.info("{} has been read from csv", i.toString()))
-                    .collect(Collectors.toMap(Items::getId, Function.identity()))
-                    .forEach(map::putIfAbsent);
+                    .filter(i -> !map.containsKey(i.getId()))
+                    .peek(i -> App.logger.info("{} will be added csv", i))
+                    .collect(Collectors.toMap(Items::getId, Function.identity())));
         } catch (IOException e) {
-            App.logger.error("Error with access to csv - ", e);
+            App.logger.error("Error with csv - ", e);
         }
     }
 }
