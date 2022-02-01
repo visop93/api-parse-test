@@ -2,7 +2,6 @@ package org.example;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
@@ -11,8 +10,8 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,8 +21,8 @@ public abstract class CSVWorker {
 
     //read CSV and parse each id
     public static void parseApiById() {
-        var fileName = "src/main/resources/basic_crafting_materials.csv";
-//        var fileName = "src/main/resources/basic_crafting_materials_all.csv";
+//        var fileName = "src/main/resources/basic_crafting_materials.csv";
+        var fileName = "src/main/resources/basic_crafting_materials_all.csv";
         try (var fr = new FileReader(fileName, StandardCharsets.UTF_8);
              var reader = new CSVReader(fr)) {
 
@@ -32,6 +31,7 @@ public abstract class CSVWorker {
 
             //read whole CSV
             while ((nextLine = reader.readNext()) != null) {
+                App.logger.info("Parsing ids -  {}", Arrays.toString(nextLine));
                 //parseInt once
                 int basicInt = Integer.parseInt(nextLine[0]);
                 int refinedInt = Integer.parseInt(nextLine[1]);
@@ -65,29 +65,29 @@ public abstract class CSVWorker {
         try (Writer writer = new FileWriter(items)) {
             //create instance of writer
             var beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
-            beanToCsv.write(map.values().stream());
+            beanToCsv.write(map.values()
+                    .stream()
+                    .peek(i -> App.logger.info("Writing - {}", i.toString())));
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            e.printStackTrace();
+            App.logger.error("Error writing csv - ", e);
         }
     }
 
     //read from .csv and return a HashMap
-    public static HashMap<Integer, Items> readItemsCSV () {
-
-        HashMap<Integer, Items> result;
+    //TODO: filter/map stream to peek only items that will be added to the map
+    public static void readItemsCSV (HashMap<Integer, Items> map) {
 
         try (var fr = new FileReader(items, StandardCharsets.UTF_8)) {
-            result = (HashMap<Integer, Items>) new CsvToBeanBuilder<Items>(fr)
+            new CsvToBeanBuilder<Items>(fr)
                     .withType(Items.class)
                     .build()
                     .parse()
                     .stream()
-                    .collect(Collectors.toMap(Items::getId, Function.identity()));
+                    .peek(i -> App.logger.info("{} has been read from csv", i.toString()))
+                    .collect(Collectors.toMap(Items::getId, Function.identity()))
+                    .forEach(map::putIfAbsent);
         } catch (IOException e) {
-            result = new HashMap<>();
-            e.printStackTrace();
+            App.logger.error("Error with access to csv - ", e);
         }
-
-        return result;
     }
 }
