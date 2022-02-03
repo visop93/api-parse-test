@@ -6,6 +6,7 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.opencsv.exceptions.CsvValidationException;
+import logcreator.LogCreator;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -31,7 +32,7 @@ public abstract class CSVWorker {
 
             //read whole CSV
             while ((nextLine = reader.readNext()) != null) {
-                App.logger.info("Parsing ids -  {}", Arrays.toString(nextLine));
+                LogCreator.logger.info("Parsing ids -  {}", Arrays.toString(nextLine));
                 //parseInt once
                 int basicInt = Integer.parseInt(nextLine[0]);
                 int refinedInt = Integer.parseInt(nextLine[1]);
@@ -67,9 +68,9 @@ public abstract class CSVWorker {
             var beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
             beanToCsv.write(map.values()
                     .stream()
-                    .peek(i -> App.logger.info("Writing - {}", i.toString())));
+                    .peek(i -> LogCreator.logger.info("Writing - {}", i.toString())));
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            App.logger.error("Error writing csv - ", e);
+            LogCreator.logger.error("Error writing csv - ", e);
         }
     }
 
@@ -82,10 +83,10 @@ public abstract class CSVWorker {
                     .parse()
                     .stream()
                     .filter(i -> !map.containsKey(i.getId()))
-                    .peek(i -> App.logger.info("{} will be added csv", i))
+                    .peek(i -> LogCreator.logger.info("{} will be added csv", i))
                     .collect(Collectors.toMap(Items::getId, Function.identity())));
         } catch (IOException e) {
-            App.logger.error("Error with csv - ", e);
+            LogCreator.logger.error("Error with csv - ", e);
         }
     }
 }
