@@ -13,7 +13,8 @@ import java.net.URL;
 import static logcreator.LogCreator.logger;
 
 public abstract class JsonUtils {
-    public static void parseId (String strId) {
+    //Access gw2api using String as an ID and create Item with it.
+    public static void parseLine(String strId) {
         logger.info("Parsing line '{}'", strId);
         //id is a number
         if (!validateStringID(strId)){
@@ -38,6 +39,7 @@ public abstract class JsonUtils {
         }
     }
 
+    //collect needed information from api
     private static JSONObject collectInformationFromApi(String strId) {
         String commerce = "https://api.guildwars2.com/v2/commerce/prices/";
         String item = "https://api.guildwars2.com/v2/items/";
@@ -70,8 +72,10 @@ public abstract class JsonUtils {
 
         } catch (MalformedURLException e) {
             logger.error("Couldn't create URL out of '{}' ID.", strId, e);
+            return null;
         } catch (IOException e) {
-            logger.error("Error while parsing '{}'ID  url.", strId, e);
+            logger.error("Error while parsing '{}' ID  url.", strId, e);
+            return null;
         }
 
         return result;
@@ -88,12 +92,12 @@ public abstract class JsonUtils {
         }
     }
 
-    //create URL
+    //create URL.
     private static URL createUrl(String link) throws MalformedURLException {
         return new URL(link);
     }
 
-    //parse URL into string
+    //parse URL into string.
     private static String parseUrl(URL url) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         //connect to URL using try-with-resources
@@ -108,8 +112,13 @@ public abstract class JsonUtils {
         return stringBuilder.toString();
     }
 
-    //check if part of api
+    //check if part of api.
     private static boolean validateJSONObjectFromApi(JSONObject obj) {
         return obj.keySet().contains("text");
+    }
+
+    //example used to catch exception in at test.
+    public static void ExceptionThrowExample() throws NumberFormatException {
+        Integer.parseInt("nope");
     }
 }
