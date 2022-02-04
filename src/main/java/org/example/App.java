@@ -1,23 +1,21 @@
 package org.example;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import files.csv.CsvUtils;
+import files.txt.TxtUtils;
+import items.ItemsDB;
+
+import static logcreator.LogCreator.logger;
 
 public class App {
-    public static final Logger logger = LoggerFactory.getLogger(App.class);
-
     public static void main(String[] args) {
-        logger.info("App started.");
+        logger.info("Program started working.");
 
-        logger.info("Parsing Api by IDs.");
-        CSVWorker.parseApiById();
+        TxtUtils.readIDs();
 
-        logger.info("Reading csv to add items that are from the base");
-        CSVWorker.readItemsCSV(Items.ITEMS_MAP);
+        CsvUtils.readItemsCSV(ItemsDB.ITEMS_MAP);
 
-        logger.info("Rewriting csv with new information");
-        CSVWorker.writeItemsCSV(Items.ITEMS_MAP);
+        CsvUtils.writeItemsToCSV(ItemsDB.ITEMS_MAP);
 
-        logger.info("Program stopped");
+        logger.info("Program finished working.");
     }
 }
