@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import static logcreator.LogCreator.logger;
 
-public abstract class TXTReader {
+public abstract class TxtUtils {
     public static void readIDs () {
         var fileName = "src/main/resources/ids_short.txt";
 //        var fileName = "src/main/resources/ids_full.txt";
