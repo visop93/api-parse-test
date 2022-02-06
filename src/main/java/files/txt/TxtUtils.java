@@ -17,7 +17,7 @@ public abstract class TxtUtils {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String inputLine;
             while ((inputLine = br.readLine()) != null) {
-                JsonUtils.parseId(inputLine);
+                JsonUtils.parseLine(inputLine);
             }
         } catch (IOException e) {
             logger.error("Can not read file '{}'", fileName);

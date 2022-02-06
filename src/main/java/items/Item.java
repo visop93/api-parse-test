@@ -5,6 +5,7 @@ import logcreator.LogCreator;
 
 import java.util.Objects;
 
+//TODO: add constructor accepting JSONObject
 public class Item {
     @CsvBindByPosition(position = 0)
     private String name;
