@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import static logcreator.LogCreator.logger;
 
 public abstract class CsvUtils {
-    private static final File items = new File("src/main/resources/items1.csv");
+    private static final File items = new File("src/main/resources/items2.csv");
 
     //take Item collection and write it into CSV using opencsv
     public static void writeItemsToCSV (HashMap<Integer, Item> map) {
@@ -32,6 +32,7 @@ public abstract class CsvUtils {
         } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
             logger.error("Error writing csv - ", e);
         }
+        logger.info("All items were written to the CSV file.");
     }
 
     //read CSV file and put absent items to the Item collection
@@ -49,5 +50,6 @@ public abstract class CsvUtils {
         } catch (IOException e) {
             logger.error("Error accessing csv file '{}' - ", items.getPath(), e);
         }
+        logger.info("CSV file has been read.");
     }
 }
